@@ -258,6 +258,84 @@
       opacity: 1;
     }
 
+    /* Resume Dropdown */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      border: none;
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      min-width: 220px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      padding: 6px;
+      opacity: 0;
+      transform: translateY(8px);
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s;
+    }
+
+    .dropdown:hover .dropdown-menu,
+    .dropdown.open .dropdown-menu {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .dropdown:hover .dropdown-toggle,
+    .dropdown.open .dropdown-toggle {
+      opacity: 0.8;
+      transform: translateY(-1px);
+    }
+
+    .dropdown:hover .dropdown-toggle .chevron-icon,
+    .dropdown.open .dropdown-toggle .chevron-icon {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      color: var(--soft);
+      border-radius: 6px;
+      transition: background 0.15s ease, color 0.15s ease;
+      text-decoration: none;
+    }
+
+    .dropdown-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--fg);
+    }
+
+    .dropdown-item .file-ext {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(196, 163, 90, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
     /* Sections */
     section {
       padding: 96px 0;
@@ -597,16 +675,36 @@
           I build production systems — AI platforms, DevOps pipelines, and scalable backend infrastructure.
         </p>
         <div class="hero-cta">
-          <a href="/resume.pdf" target="_blank" class="btn btn-solid">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            Resume
-          </a>
-          <a href="https://github.com/yourhandle" target="_blank" class="btn btn-outline">GitHub</a>
-          <a href="https://linkedin.com/in/you" target="_blank" class="btn btn-outline">LinkedIn</a>
+          <div class="dropdown">
+            <button class="btn btn-solid dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Resume
+              <svg class="chevron-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" style="margin-left: 2px; transition: transform 0.2s;">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            <div class="dropdown-menu" role="menu">
+              <a href="./arpit-shukla-resume.pdf" download="resume.pdf" class="dropdown-item" role="menuitem">
+                <span>PDF Version</span>
+                <span class="file-ext">pdf</span>
+              </a>
+              <a href="./arpit-shukla-resume.docx" download="resume.docx" class="dropdown-item" role="menuitem">
+                <span>Word Version</span>
+                <span class="file-ext">docx</span>
+              </a>
+              <a href="./arpit-shukla-resume.md" download="resume.md" class="dropdown-item" role="menuitem">
+                <span>Markdown Version</span>
+                <span class="file-ext">md</span>
+              </a>
+            </div>
+          </div>
+          <a href="https://github.com/Astron-1" target="_blank" class="btn btn-outline">GitHub</a>
+          <a href="https://linkedin.com/in/arpit-shukla001" target="_blank" class="btn btn-outline">LinkedIn</a>
         </div>
       </section>
 
@@ -628,7 +726,8 @@
           </div>
           <div class="skill-row">
             <div class="skill-name">AI / Voice Systems</div>
-            <div class="skill-desc">Voice agent platforms, LLM integration, prompt Developering, and configurable testing
+            <div class="skill-desc">Voice agent platforms, LLM integration, prompt Developering, and configurable
+              testing
               pipelines for AI products.</div>
           </div>
           <div class="skill-row">
@@ -865,6 +964,32 @@
     }, { threshold: 0.07 });
 
     animEls.forEach(el => anim.observe(el));
+
+    /* ── Dropdown Menu Toggle ───────────────────────────── */
+    const dropdown = document.querySelector('.dropdown');
+    const dropdownToggle = document.querySelector('.dropdown-toggle');
+
+    if (dropdownToggle && dropdown) {
+      dropdownToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = dropdown.classList.toggle('open');
+        dropdownToggle.setAttribute('aria-expanded', isOpen);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target)) {
+          dropdown.classList.remove('open');
+          dropdownToggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          dropdown.classList.remove('open');
+          dropdownToggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
   </script>
 
 </body>
